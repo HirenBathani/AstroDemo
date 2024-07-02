@@ -1,0 +1,45 @@
+---
+import { Astro } from 'astro';
+
+export const prerender = false;
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const username = data.get("username");
+    const email = data.get("email");
+    const password = data.get("password");
+
+    if (email) {
+      const headers = new Headers();
+      headers.append("Set-Cookie", "token=hdszjhsjhjhasdjhdsjhd; Path=/; SameSite=Lax");
+      headers.append("Location", "/dashboard");
+
+      return new Response(null, {
+        status: 302,
+        headers: headers,
+      });
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+<h1>Register</h1>
+<form method="POST">
+  <label>
+    Username:
+    <input type="text" name="username" required />
+  </label>
+  <label>
+    Email:
+    <input type="text" name="email" />
+  </label>
+  <label>
+    Password:
+    <input type="password" name="password" required minlength="6" />
+  </label>
+  <button type="submit">Submit</button>
+</form>
